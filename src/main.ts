@@ -1,5 +1,7 @@
 import { Contact, Message, ScanStatus, WechatyBuilder, log } from 'wechaty';
 import qrTerm from 'qrcode-terminal';
+import './env';
+import { sendMessage } from './chatgpt';
 
 const name = 'chat-bot';
 const bot = WechatyBuilder.build({
@@ -33,7 +35,6 @@ bot.on('scan', (qrcode: string, status: ScanStatus) => {
       status,
       qrcodeImageUrl
     );
-
     qrTerm.generate(qrcode, { small: true }); // show qrcode on console
   } else {
     log.info('StarterBot', 'onScan: %s(%s)', ScanStatus[status], status);
@@ -46,10 +47,14 @@ bot.on('logout', (user: Contact) => {
   log.info('StarterBot', '%s logout', user);
 });
 bot.on('message', async (msg: Message) => {
-  log.info('StarterBot', msg.toString());
-
-  if (msg.text() === 'ding') {
+  // log.info('StarterBot', msg.toString());
+  if (msg.self()) return;
+  const text = msg.text();
+  if (text === 'ding') {
     await msg.say('dong');
+  } else {
+    const result = await sendMessage(text);
+    msg.say(result);
   }
 });
 

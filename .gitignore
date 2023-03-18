@@ -3,6 +3,7 @@ node_modules/
 *.memory-card.json
 package-lock.json
 .cz-config.js
+.env.local
 
 # Editor directories and files
 .idea
